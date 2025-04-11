@@ -2,7 +2,14 @@ import model from "./model.js";
 import { v4 as uuidv4 } from "uuid";
 import * as courseDao from "../Courses/dao.js";
 
-export const createUser = (user) => {}
+export const createUser = async (user) => {
+    const newUser = new model({
+        ...user,
+        _id: uuidv4(),
+        role: user.role || "USER"
+    });
+    return await newUser.save();
+}
 export const findAllUsers = () => model.find();
 export const findUserById = (userId) => model.findById(userId);
 export const findUserByUsername = (username) => model.findOne({ username: username });
