@@ -8,7 +8,7 @@ export const createUser = async (user) => {
         _id: uuidv4(),
         role: user.role || "USER"
     });
-    return await newUser.save();
+    return model.create(newUser);
 }
 export const findAllUsers = () => model.find();
 export const findUserById = (userId) => model.findById(userId);
