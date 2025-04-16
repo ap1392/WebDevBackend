@@ -4,6 +4,10 @@ import * as assignmentsDao from "../Assignments/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function CourseRoutes(app) {
+  app.post("/api/courses", async (req, res) => {
+    const course = await dao.createCourse(req.body);
+    res.json(course);
+  }); 
   app.get("/api/courses", async (req, res) => {
     const courses = await dao.findAllCourses();
     res.send(courses);
