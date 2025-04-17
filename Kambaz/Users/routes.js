@@ -3,6 +3,25 @@ import * as courseDao from "../Courses/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function UserRoutes(app) {
+  const findCoursesForUser = async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    if (!currentUser) {
+      res.sendStatus(401);
+      return;
+    }
+    if (currentUser.role === "ADMIN") {
+      const courses = await courseDao.findAllCourses();
+      res.json(courses);
+      return;
+    }
+    let { uid } = req.params;
+    if (uid === "current") {
+      uid = currentUser._id;
+    }
+    const courses = await enrollmentsDao.findCoursesForUser(uid);
+    res.json(courses);
+  };
+
   const findCoursesForEnrolledUser = (req, res) => {
     let { userId } = req.params;
     if (userId === "current") {
@@ -106,5 +125,6 @@ const updateUser = async (req, res) => {
   app.post("/api/users/signout", signout);
   app.post("/api/users/profile", profile);
   app.post("/api/users/current/courses", createCourse);
-  app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+  app.get("/api/users/:userId/courses", findCoursesForUser);
+  //app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
 }
