@@ -6,6 +6,10 @@ import * as enrollmentsDao from "../Enrollments/dao.js";
 export default function CourseRoutes(app) {
   app.post("/api/courses", async (req, res) => {
     const course = await dao.createCourse(req.body);
+    const currentUser = req.session["currentUser"];
+    if (currentUser) {
+      await enrollmentsDao.enrollUserInCourse(currentUser._id, course._id);
+    }
     res.json(course);
   }); 
   app.get("/api/courses", async (req, res) => {
@@ -14,6 +18,12 @@ export default function CourseRoutes(app) {
   });
   app.delete("/api/courses/:courseId", async (req, res) => {
     const { courseId } = req.params;
+    
+    const enrolledUsers = await enrollmentsDao.findUsersForCourse(courseId);
+    for (const user of enrolledUsers) {
+      await enrollmentsDao.unenrollUserFromCourse(user._id, courseId);
+    }
+    
     const status = await dao.deleteCourse(courseId);
     res.send(status);
   });
