@@ -5,6 +5,19 @@ const courseSchema = new mongoose.Schema({
    number: String,
    credits: Number,
    description: String,
+   pazzaFolders: {
+     type: [String],
+     default: [
+       "hw1",
+       "hw2",
+       "hw3",
+       "project",
+       "exam",
+       "logistics",
+       "other",
+       "office_hours",
+     ],
+   },
  },
  { collection: "courses" }
 );
