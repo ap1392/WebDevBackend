@@ -20,18 +20,18 @@ export const deletePost = (postId) => postModel.deleteOne({ _id: postId });
 
 // Answers
 export function addStudentAnswer(postId, answer) {
-  const newAnswer = { ...answer, _id: uuidv4() };
+  // let Mongoose generate the subdocument _id automatically
   return postModel.updateOne(
     { _id: postId },
-    { $push: { studentAnswers: newAnswer } }
+    { $push: { studentAnswers: answer } }
   );
 }
 
 export function addInstructorAnswer(postId, answer) {
-  const newAnswer = { ...answer, _id: uuidv4() };
+  // let Mongoose generate the subdocument _id automatically
   return postModel.updateOne(
     { _id: postId },
-    { $push: { instructorAnswers: newAnswer } }
+    { $push: { instructorAnswers: answer } }
   );
 }
 
