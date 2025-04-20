@@ -37,15 +37,21 @@ export function addInstructorAnswer(postId, answer) {
 
 // Followups
 export function addFollowup(postId, followup) {
-  const newFollowup = { ...followup, _id: uuidv4(), replies: [] };
-  return postModel.updateOne({ _id: postId }, { $push: { followups: newFollowup } });
+  // strip any incoming _id so mongoose will auto-generate subdocument _id
+  const { _id, ...followupData } = followup;
+  const newFollowup = { ...followupData, replies: [] };
+  return postModel.updateOne(
+    { _id: postId },
+    { $push: { followups: newFollowup } }
+  );
 }
 
 export function addReply(postId, followupId, reply) {
-  const newReply = { ...reply, _id: uuidv4() };
+  // strip any incoming _id so mongoose will auto-generate reply subdocument _id
+  const { _id, ...replyData } = reply;
   return postModel.updateOne(
     { _id: postId, "followups._id": followupId },
-    { $push: { "followups.$.replies": newReply } }
+    { $push: { "followups.$.replies": replyData } }
   );
 }
 
